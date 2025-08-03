@@ -5,7 +5,7 @@ WORKDIR /var/www/html/
 #set our application folder as an environment variable
 ENV APP_HOME=/var/www/html
 
-#set our application folder as an environment variable
+#set UID/GID
 ARG APP_UID=1000
 ARG APP_GID=1000
 
