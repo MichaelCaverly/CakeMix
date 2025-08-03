@@ -1,0 +1,87 @@
+services:
+
+  cakephp:
+    build:
+      context: .
+
+    ports:
+      - "3000:80"
+
+    volumes:
+      - ./:/var/www/html/
+
+    depends_on:
+      - mysql
+
+    user: "${APP_UID}:${APP_GID}"
+
+    environment:
+      APP_UID: ${APP_UID}
+      APP_GID: ${APP_GID}
+
+      DEBUG: ${DEBUG}
+
+      SECURITY_SALT: ${SECURITY_SALT}
+
+      DEBUG_KIT_FORCE_ENABLE: ${DEBUG_KIT_FORCE_ENABLE}
+      DEBUG_KIT_IGNORE_AUTHORIZATION: ${DEBUG_KIT_IGNORE_AUTHORIZATION}
+
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  mysql:
+    image: mysql:8
+    
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --mysql-native-password=ON
+    
+    ports:
+      - "3002:3306"
+    
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      MYSQL_TEST_USERNAME: ${MYSQL_TEST_USERNAME}
+      MYSQL_TEST_PASSWORD: ${MYSQL_TEST_PASSWORD}
+      MYSQL_TEST_DATABASE: ${MYSQL_TEST_DATABASE}
+
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+    volumes:
+      - 'mysql_data:/var/lib/mysql'
+      - './docker/provision/mysql/init:/docker-entrypoint-initdb.d'
+
+    healthcheck:
+      test: mysql ${MYSQL_DATABASE} --user=${MYSQL_USERNAME} --password='${MYSQL_PASSWORD}' --silent --execute "SELECT 1;"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+
+    ports:
+      - "3001:80"
+    
+    depends_on:
+      - mysql
+      
+    environment:
+      - PMA_HOSTS=mysql
+      - UPLOAD_LIMIT=10G
+      - MEMORY_LIMIT=2G
+
+volumes:
+    mysql_data:
+    minio_storage:
