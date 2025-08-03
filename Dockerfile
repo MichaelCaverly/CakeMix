@@ -71,13 +71,11 @@ RUN sed -i -e "s/html/html\/cake\/webroot/g" /etc/apache2/sites-enabled/000-defa
 # enable apache module rewrite
 RUN a2enmod rewrite
 
-# change ownership of our applications
-#RUN chown -R appuser:appgroup $APP_HOME
-
 
 ################################
 #          Entrypoint          #
 ################################
+
 
 # Copy the custom entrypoint script into the container
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
