@@ -5,7 +5,7 @@ This project includes preconfigured Docker containers that automatically install
 
 ## Features
 - Automatic CakePHP v5 installation with DebugKit 
-- Uses the Official `php:8-apache` image as a base
+- Uses the Official `php:8.4-apache` image as a base
 - incudes MySQL v8 and PHPMyAdmin
 
 ## Getting Started

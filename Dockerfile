@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:8.4-apache
 
 WORKDIR /var/www/html/
 
@@ -39,15 +39,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ################################
 
 
-RUN docker-php-ext-install bcmath bz2 calendar dba exif gettext iconv intl soap tidy xsl zip && \
-    docker-php-ext-install mysqli pgsql pdo pdo_mysql pdo_pgsql  && \
+RUN docker-php-ext-install bcmath bz2 calendar dba exif gettext iconv intl \
+    soap tidy xsl zip mysqli pgsql pdo pdo_mysql pdo_pgsql gd && \
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
-    docker-php-ext-install gd && \
-    docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-install imap && \
     docker-php-ext-configure hash --with-mhash && \
-    pecl install redis && docker-php-ext-enable redis && \
-    pecl install mcrypt && docker-php-ext-enable mcrypt && \
+    pecl install imap && docker-php-ext-enable imap && \
     pecl install imagick && docker-php-ext-enable imagick
 
 COPY ./custom-php.ini $PHP_INI_DIR/conf.d/
